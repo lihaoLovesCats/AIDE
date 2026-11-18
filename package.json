@@ -1,0 +1,17 @@
+{
+  "name": "aide",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "AIDE · Agent 驱动的 Java Web IDE",
+  "scripts": {
+    "setup": "pnpm --dir server install && pnpm --dir prototype install",
+    "dev": "node scripts/dev.mjs",
+    "dev:server": "pnpm --dir server dev",
+    "dev:web": "pnpm --dir prototype dev",
+    "build": "pnpm --dir prototype build && pnpm --dir server build",
+    "start": "node server/dist/index.js",
+    "package:win": "node scripts/package.mjs",
+    "typecheck": "pnpm --dir server exec tsc --noEmit && pnpm --dir prototype exec tsc --noEmit"
+  }
+}

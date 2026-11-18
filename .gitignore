@@ -1,0 +1,53 @@
+# dependencies
+node_modules/
+
+# build output
+server/dist/
+prototype/dist/
+dist-package/
+installer/Output/
+
+# runtime data & logs
+server/data/
+*.log
+
+# local tooling / screenshots
+.tools/
+.shots/
+.aide/
+
+# local test fixtures with nested VCS or generated repositories
+sandbox/demo-spring/
+sandbox/demo-spring-remote.git/
+sandbox/svn-repo/
+sandbox/svn-demo/
+sandbox/ts-demo/node_modules/
+
+# caches / build output
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.tox/
+.eggs/
+target/
+dist/
+build/
+out/
+coverage/
+htmlcov/
+.next/
+.nuxt/
+.svelte-kit/
+.turbo/
+
+# env / editor / OS
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

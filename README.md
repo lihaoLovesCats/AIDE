@@ -94,18 +94,6 @@ pnpm dev          # server 7800 + web 5180
 > 项目目录**不要求是 Git 仓库**：Git 项目会为每个 Agent 创建独立 worktree 并支持提交/分支；SVN 项目使用共享工作副本；
 > 其他目录直接在主目录运行，跳过提交与分支相关能力。SVN 需要安装 `svn` 命令行客户端（如 SlikSVN / TortoiseSVN CLI）。
 
-## 快速开始（原型）
-
-```bash
-cd prototype
-pnpm install
-pnpm dev
-```
-
-打开 <http://127.0.0.1:5180/>。需要 Node 20+（当前机器 Node 24.15、pnpm 11.23）。
-
-生产构建：`pnpm build`（产物在 `prototype/dist`）。
-
 ## 快速开始（后端）
 
 ```bash
@@ -147,27 +135,13 @@ MCP 脚本在 `app/server/mcp`。运行数据在 `%APPDATA%\AIDE`（可用 `AIDE
 停止：关闭启动窗口，或运行 `stop-aide.cmd`（按 `server.pid` 杀进程树，含 Agent 子进程）。
 安装包未签名，SmartScreen 会提示未知发布者；安装向导为英文（内部测试用）。
 
-## 原型里可以试什么
+## 使用方式
 
-| 操作 | 预期 |
-|------|------|
-| 点左侧项目图标（OC / MW / US） | 切换项目，文件树、会话、Git、运行实例全部跟着换 |
-| **拖拽左栏两条分隔条**（双击复位） | 自由调整 文件 / 会话 / Git 三段高度，折叠时自动让位 |
-| 点文件树里的 `.java/.xml/.yml` | 右侧打开**只读**预览，可切「差异」看 Agent 改了什么 |
-| 点「项目经理」会话，输入需求并 `Ctrl+Enter` | 模拟流式回复 → 生成派发卡片 → 目标 Agent 状态变为运行中 |
-| 派发卡片上的「改派 / 撤销」 | 改派到其他 Agent（含状态与置信度）；撤销会**给目标 Agent 发一条撤销通知**，让它回滚未完成的改动并回报结果 |
-| 点「前端-列表」「数据-迁移」会话 | 查看 **等待确认 / 等待授权** 横幅，分别可"按页码条继续 / 改为加载更多"、"批准执行 / 拒绝" |
-| 点会话行右侧「停止」 | 进程停止，状态变「已停止」 |
-| 点 Git 区「一键提交并推送」 | 变更清单 + 提交信息；勾选/取消 **提交前跑 mvn test**；点「演示：模拟测试失败」后可用「仍然提交…」走二次确认强制提交 |
-| 点 Git 区「分支 6」 | 打开**分支与合并**面板：领先/落后、最近提交、状态、逐分支合并（含冲突升级演示） |
-| 点「+ 新建」 | 角色模板、worktree/分支/端口预览，创建后进入排队 |
-| 点顶部 `:18080` 或「运行」 | 多实例并列（每个 worktree 一行）、逐实例启动/停止、**直接改端口**、预览新标签打开；顶部实时显示 CPU / 内存水位，**预计内存超 80% 时拒绝启动新实例** |
-| 点右上角齿轮 | 切换 **深空 / 浅色** 主题，**紧凑 / 标准 / 舒适** 界面缩放；选择会记住（localStorage，刷新不丢） |
-
-> 所有数据均为内置 Mock，刷新页面即回到初始状态；不会执行任何真实 git 命令或启动 Java 进程。
-> 预览按钮会在新标签打开 `preview.html`（模拟被开发应用的订单页，带端口与分支信息）。
-
----
+1. 启动 AIDE 后注册本地项目（Git / SVN / 普通目录均可）。
+2. 对「项目经理」描述目标；它按模块拆解并派发给负责人，不亲自写代码。
+3. 模块 Agent 在 Git worktree（或 SVN 共享工作副本）中开发，运行测试并汇报。
+4. 检查变更 → 测试门禁 → AI 提交信息 → `git push` / `svn commit`。
+5. 启动运行实例查看预览；Agent 用 `aide_note` 把踩坑记录到 `.aide/KNOWLEDGE.md`。
 
 ## 正式开发进度
 
@@ -176,7 +150,7 @@ MCP 脚本在 `app/server/mcp`。运行数据在 `%APPDATA%\AIDE`（可用 `AIDE
 | P1 服务骨架 | ✅ | Fastify + `node:sqlite`、项目注册、文件树、Git 只读、SSE |
 | P2 Agent 运行时 | ✅ | 真实 claude 长驻进程、流式事件、停止 / `--resume`、回合排队、成本统计 |
 | P2.5 前端联调 | ✅ | 项目/文件树/Git/会话全部接真实 API，SSE 实时状态与消息，去掉 Mock |
-| P3 Worktree | ✅ 基础 | 每 Worker 会话独立 worktree + `aide/*` 分支，`.aide/` 自动排除；合并待 P5 |
+| P3 Worktree | ✅ | 每 Worker 会话独立 worktree + `aide/*` 分支，`.aide/` 自动排除；P5 接入合并 |
 | P4 项目经理 | ✅ | MCP 工具桥：查看 / 新建 / 派发 Agent、Git 状态与提交；派发卡片展示理由与置信度 |
 | P5 Git 流水线 | ✅ | 会话级提交、AI 提交信息、测试门禁、强制提交审计、`--no-ff` 合并 + 冲突回滚 |
 | P6 运行预览 | ✅ | 端口池 18080–18120、会话级实例、日志 SSE、内存准入、新标签预览 |
@@ -222,7 +196,7 @@ MCP 脚本在 `app/server/mcp`。运行数据在 `%APPDATA%\AIDE`（可用 `AIDE
 
 | 决策 | 结论 |
 |------|------|
-| AIDE 自身栈 | Node.js + TypeScript（Fastify）+ React 19 + Vite + Tailwind（与"被开发项目用 Java"解耦） |
+| AIDE 自身栈 | Node.js + TypeScript（Fastify）+ React 19 + Vite + Tailwind（与被开发项目语言解耦） |
 | Agent 引擎 | 每会话一个长驻 `claude.exe`，stdin/stdout 双向 `stream-json` |
 | 会话恢复 | 持久化 `claude_session_id`，进程退出后用 `--resume` 重建 |
 | 项目经理 | 自身是 claude 会话，通过 MCP 工具（`aide_*`）列会话、派发、新建、提交 |
@@ -235,40 +209,22 @@ MCP 脚本在 `app/server/mcp`。运行数据在 `%APPDATA%\AIDE`（可用 `AIDE
 | 运行预览 | 每 worktree 独立实例，端口池可手工改，预览在新标签打开；资源水位超阈值拒绝启动 |
 | 外观 | 深空 / 浅色双主题 + 三档界面缩放，localStorage 记忆 |
 | 权限 | `bypassPermissions` 全自动 + 路径/命令护栏 |
-| 运行预览 | 每 worktree 独立实例，端口池 18080+，日志 SSE，一键打开 |
 | 存储 | SQLite（`node:sqlite`，零原生依赖） |
 
 细节见 [技术决策与实施方案](docs/02-技术决策与实施方案.md)。
 
 ---
 
-## 已验证的环境事实
+## 当前环境基线
 
-- `claude` CLI **2.1.224**，原生 `claude.exe` 可被 `ProcessBuilder`/`spawn` 直连，无需 `cmd.exe` 包装；
-- `--session-id` 新建 + `--resume` 续聊均通过实测（第二轮能正确回忆第一轮内容）；
-- `--input-format stream-json --output-format stream-json` 支持同一进程内多轮对话；
-- Windows 上 `.ps1` shim 受执行策略限制，Java/Node 侧应直接调用 `claude.exe` 或 `claude.cmd`；
-- 当前机器无 JDK 21/Maven——AIDE 自身不依赖它们，但运行被开发的 Java 项目时需要项目自备 JDK/Maven（后续在项目设置里指定 JDK 路径）。
+- Claude Code CLI **2.1.224**（Windows 原生 `claude.exe`）；
+- Node 24.15 / pnpm 11；Fastify 5 + React 19 + Vite；
+- JDK 21 / Maven 3.10 / Python 3.14 / Node 24（可在「设置 → 工具链」配置）；
+- Git 2.54；SVN 客户端 SlikSVN（可选，SVN 项目需要）。
 
----
+## 当前状态
 
-## 下一步（原型验收后）
-
-1. **P1 服务骨架**：Fastify + SQLite、项目注册、文件树、git status/log、SSE；
-2. **P2 Agent 运行时**：会话进程池、NDJSON 解析、流式渲染、停止/resume、成本统计；
-3. **P3 Worktree**：分支/工作树管理、单项目写锁队列、合并回主干；
-4. **P4 项目经理**：MCP stdio 桥 7 个工具、派发卡片、新建 Agent 模板；
-5. **P5 Git 流水线**：专用 Git 会话、提交信息生成、commit/push、冲突提示；
-6. **P6 运行预览**：端口池、启动/停止、日志流、预览；
-7. **P7 打磨**：设置页、快捷键、通知、错误恢复、`start.cmd` 一键启动。
-
----
-
-## 原型已知限制
-
-- 无后端，所有交互都是前端模拟；
-- 文件预览只内置了少量样例文件，其余显示占位内容；
-- 提交、推送、合并、启动实例都是动画，不会真的执行；
-- 会话流式输出为定时器模拟，Token/费用为近似值；
-- CPU / 内存水位为模拟值（按运行实例数推算），真实实现会读系统指标；
-- 强制提交、资源拦截目前只写入前端状态，尚未落审计库。
+- 当前版本 **0.3.0**（2026-11-18），内部测试；
+- 产品整体说明与迭代记录：[docs/aide-overview.html](docs/aide-overview.html)；
+- 0.1.0 → 0.3.0 逐项更新：[docs/changelog-0.1.0-to-0.3.0.html](docs/changelog-0.1.0-to-0.3.0.html)；
+- 已知限制见 [02-技术决策与实施方案 §22.5](docs/02-技术决策与实施方案.md)：SVN 共享工作副本、知识生成提示词约束、混合前后端单主类型、仅 Windows x64/未签名。

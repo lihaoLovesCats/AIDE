@@ -6,6 +6,9 @@
 >
 > 整体说明与迭代记录：[docs/aide-overview.html](docs/aide-overview.html)
 > · 0.1.0 → 0.3.0 逐项更新：[docs/changelog-0.1.0-to-0.3.0.html](docs/changelog-0.1.0-to-0.3.0.html)
+>
+> 宣传页 / 下载：[lihaolovescats.github.io/AIDE](https://lihaolovescats.github.io/AIDE/)
+> · 发布版：[v0.3.0 Release](https://github.com/lihaoLovesCats/AIDE/releases/tag/v0.3.0)
 
 ### 支持的项目类型
 
@@ -48,6 +51,7 @@ C:\path\to\AIDE
 ├─ docs/
 │  ├─ 01-需求分析与开发计划.md      需求拆解、架构草案、风险
 │  ├─ 02-技术决策与实施方案.md      已确认的技术决策、实施记录
+│  ├─ index.html                    宣传页入口（GitHub Pages）
 │  ├─ aide-overview.html            产品整体说明与迭代记录（自包含）
 │  ├─ changelog-0.1.0-to-0.3.0.html 0.1.0 → 0.3.0 更新总结（自包含）
 │  └─ preview/                      原型与实机截图
@@ -129,6 +133,10 @@ node scripts/package.mjs --skip-build   # 复用已有 dist，仅重新打包
 
 - `AIDE-0.3.0-win-x64.zip`：免安装，解压后双击 `start-aide.cmd`；
 - `AIDE-Setup-0.3.0.exe`：用户级安装（`%LOCALAPPDATA%\Programs\AIDE`），带开始菜单、停止快捷方式与卸载。
+
+下载：[安装包](https://github.com/lihaoLovesCats/AIDE/releases/download/v0.3.0/AIDE-Setup-0.3.0.exe)
+· [免安装 ZIP](https://github.com/lihaoLovesCats/AIDE/releases/download/v0.3.0/AIDE-0.3.0-win-x64.zip)
+· [SHA256SUMS](https://github.com/lihaoLovesCats/AIDE/releases/download/v0.3.0/SHA256SUMS.txt)
 
 打包内容：自带 `node.exe`；服务端用 esbuild 打成单文件 ESM（不携带 node_modules）；前端在 `app/web`；
 MCP 脚本在 `app/server/mcp`。运行数据在 `%APPDATA%\AIDE`（可用 `AIDE_DATA` 覆盖），默认端口 7800（可用 `AIDE_PORT` 覆盖）。
